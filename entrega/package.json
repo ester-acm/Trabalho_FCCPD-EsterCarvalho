@@ -1,0 +1,30 @@
+{
+  "name": "mini-ecommerce-distribuido",
+  "version": "1.0.0",
+  "description": "Mini e-commerce distribuído: gateway + usuários + produtos (replicado) + pedidos, com heartbeat e JWT",
+  "private": true,
+  "scripts": {
+    "start": "concurrently -n USERS,PRODUTOS,REPLICA,PEDIDOS,GATEWAY -c green,blue,cyan,magenta,yellow \"node users/server.js\" \"node products/server.js\" \"cross-env INSTANCE_ROLE=replica INSTANCE_PORT=5012 node products/server.js\" \"node orders/server.js\" \"node gateway/server.js\"",
+    "start:tls": "cross-env USE_TLS=true npm start",
+    "start:users": "node users/server.js",
+    "start:products": "node products/server.js",
+    "start:replica": "cross-env INSTANCE_ROLE=replica INSTANCE_PORT=5012 node products/server.js",
+    "start:orders": "node orders/server.js",
+    "start:gateway": "node gateway/server.js",
+    "certs": "node scripts/generate-certs.js",
+    "report": "node scripts/build-report.js",
+    "demo": "node scripts/demo.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0",
+    "cross-env": "^7.0.3",
+    "selfsigned": "^2.4.1",
+    "pdfkit": "^0.15.0"
+  }
+}

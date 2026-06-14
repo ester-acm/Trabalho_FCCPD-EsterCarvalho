@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Monitoramento — Mini E-commerce Distribuído</title>
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: #0f1320; color: #e6e9f0; padding: 32px;
+    }
+    h1 { font-size: 22px; margin: 0 0 4px; }
+    .sub { color: #8b93a7; font-size: 13px; margin-bottom: 24px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+    .card {
+      background: #1a2030; border: 1px solid #283047; border-radius: 12px; padding: 18px;
+      transition: border-color .3s;
+    }
+    .card.up { border-left: 4px solid #2ecc71; }
+    .card.down { border-left: 4px solid #e74c3c; }
+    .card.unknown { border-left: 4px solid #95a5a6; }
+    .name { font-size: 15px; font-weight: 600; }
+    .url { font-size: 12px; color: #8b93a7; word-break: break-all; margin: 6px 0; }
+    .badge { display: inline-block; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 999px; }
+    .badge.up { background: rgba(46,204,113,.15); color: #2ecc71; }
+    .badge.down { background: rgba(231,76,60,.15); color: #e74c3c; }
+    .badge.unknown { background: rgba(149,165,166,.15); color: #95a5a6; }
+    .since { font-size: 11px; color: #6b7384; margin-top: 8px; }
+    .footer { margin-top: 24px; font-size: 12px; color: #6b7384; }
+    .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #2ecc71; margin-right: 6px; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
+  </style>
+</head>
+<body>
+  <h1>Monitoramento dos serviços</h1>
+  <div class="sub"><span class="dot"></span>Status vindo do heartbeat do gateway, atualiza a cada 2s</div>
+  <div class="grid" id="grid"></div>
+  <div class="footer" id="footer"></div>
+
+  <script>
+    const labels = {
+      users: 'Serviço de Usuários',
+      products: 'Serviço de Produtos (primário)',
+      productsReplica: 'Serviço de Produtos (réplica)',
+      orders: 'Serviço de Pedidos',
+    };
+    const statusText = { up: 'ONLINE', down: 'OFFLINE', unknown: '...' };
+
+    async function refresh() {
+      try {
+        const r = await fetch('/status');
+        const data = await r.json();
+        const grid = document.getElementById('grid');
+        grid.innerHTML = '';
+        for (const [key, svc] of Object.entries(data.services)) {
+          const el = document.createElement('div');
+          el.className = 'card ' + svc.status;
+          el.innerHTML =
+            '<div class="name">' + (labels[key] || svc.label) + '</div>' +
+            '<div class="url">' + svc.url + '</div>' +
+            '<span class="badge ' + svc.status + '">' + (statusText[svc.status] || svc.status) + '</span>' +
+            '<div class="since">desde ' + new Date(svc.since).toLocaleString('pt-BR') + '</div>';
+          grid.appendChild(el);
+        }
+        document.getElementById('footer').textContent =
+          'Gateway: ' + data.gateway + '  ·  última leitura: ' + new Date(data.time).toLocaleString('pt-BR');
+      } catch (e) {
+        document.getElementById('footer').textContent = 'Falha ao contactar o gateway: ' + e.message;
+      }
+    }
+    refresh();
+    setInterval(refresh, 2000);
+  </script>
+</body>
+</html>

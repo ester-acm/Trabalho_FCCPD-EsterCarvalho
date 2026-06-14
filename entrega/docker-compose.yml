@@ -1,0 +1,66 @@
+# Sobe toda a infraestrutura com um comando:  docker compose up --build
+# Acesse o gateway/dashboard em http://localhost:8080
+services:
+  users:
+    build: ./users
+    environment:
+      JWT_SECRET: super-secret-troque-isto
+      JWT_EXPIRES_IN: 1h
+      USERS_PORT: 5001
+    ports:
+      - "5001:5001"
+
+  products:
+    build: ./products
+    environment:
+      JWT_SECRET: super-secret-troque-isto
+      INTERNAL_KEY: chave-interna-troque
+      INSTANCE_ROLE: primary
+      INSTANCE_PORT: 5002
+      REPLICA_URL: http://products-replica:5012
+    ports:
+      - "5002:5002"
+    depends_on:
+      - products-replica
+
+  products-replica:
+    build: ./products
+    environment:
+      JWT_SECRET: super-secret-troque-isto
+      INTERNAL_KEY: chave-interna-troque
+      INSTANCE_ROLE: replica
+      INSTANCE_PORT: 5012
+    ports:
+      - "5012:5012"
+
+  orders:
+    build: ./orders
+    environment:
+      JWT_SECRET: super-secret-troque-isto
+      ORDERS_PORT: 5003
+      PRODUCTS_URL: http://products:5002
+      PRODUCTS_REPLICA_URL: http://products-replica:5012
+    ports:
+      - "5003:5003"
+    depends_on:
+      - products
+      - products-replica
+
+  gateway:
+    build: ./gateway
+    environment:
+      GATEWAY_PORT: 8080
+      USERS_URL: http://users:5001
+      PRODUCTS_URL: http://products:5002
+      PRODUCTS_REPLICA_URL: http://products-replica:5012
+      ORDERS_URL: http://orders:5003
+      HEARTBEAT_INTERVAL_MS: 5000
+      HEARTBEAT_TIMEOUT_MS: 2000
+      HEARTBEAT_MAX_RETRIES: 2
+    ports:
+      - "8080:8080"
+    depends_on:
+      - users
+      - products
+      - products-replica
+      - orders

@@ -1,0 +1,23 @@
+# Dependências
+node_modules/
+**/node_modules/
+
+# Dados gerados em runtime
+**/data/
+**/logs/
+*.log
+
+# Segredos e certificados
+.env
+certs/
+*.pem
+
+# Lixo de sistema operacional
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Configurações de editor/IDE
+.vscode/
+.idea/
+*.swp
