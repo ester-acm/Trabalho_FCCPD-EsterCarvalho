@@ -145,7 +145,7 @@ A autenticação é realizada por meio de tokens JWT assinados com uma chave sec
 
 ## Testes
 
-Os testes realizados — abrangendo a replicação de dados, a queda e a recuperação de serviços e a validação dos mecanismos de segurança — estão documentados, com as respectivas saídas, no arquivo [TESTES.md](TESTES.md).
+Os testes realizados — abrangendo a replicação de dados, a queda e a recuperação de serviços e a validação dos mecanismos de segurança — estão documentados, com as respectivas saídas, no arquivo [TESTES.md](entrega/TESTES.md).
 
 ## Relatório
 
