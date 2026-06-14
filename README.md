@@ -71,7 +71,7 @@ Para executar a demonstração completa do fluxo do sistema, abra um segundo ter
 npm run demo
 ```
 
-As instruções detalhadas — incluindo a execução por meio do Docker Compose, a ativação do TLS e os procedimentos para simulação de falhas — encontram-se no arquivo [README_execucao.md](README_execucao.md).
+As instruções detalhadas — incluindo a execução por meio do Docker Compose, a ativação do TLS e os procedimentos para simulação de falhas — encontram-se no arquivo [README_execucao.md](entrega/README_execucao.md).
 
 ## Credenciais de acesso pré-cadastradas
 
@@ -149,4 +149,4 @@ Os testes realizados — abrangendo a replicação de dados, a queda e a recuper
 
 ## Relatório
 
-A análise técnica completa do projeto, incluindo a discussão das decisões de projeto, dos *trade-offs* e das limitações da implementação, está disponível no arquivo [relatorio.pdf](relatorio.pdf).
+A análise técnica completa do projeto, incluindo a discussão das decisões de projeto, dos *trade-offs* e das limitações da implementação, está disponível no arquivo [relatorio.pdf](entrega/relatorio.pdf).
